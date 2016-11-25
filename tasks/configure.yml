@@ -1,0 +1,106 @@
+---
+
+- name: set vault configuration
+  set_fact:
+    vault_config: "{{ vault_config }}"
+
+- name: create service group
+  group:
+    name: "{{ vault_group }}"
+    system: yes
+  when: vault_user_managed
+
+- name: create service user
+  user:
+    name: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    createhome: no
+    system: yes
+    shell: /bin/false
+    comment: "vault service user"
+  when: vault_user_managed
+
+- name: create conf directory
+  file:
+    state: directory
+    path: "{{ vault_conf_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: create data directory
+  file:
+    state: directory
+    path: "{{ vault_data_dir }}"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: 0755
+    recurse: yes
+
+- name: write config file
+  copy:
+    content: "{{ vault_config | to_nice_json }}"
+    dest: "{{ vault_conf_dir }}/vault.json"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+  notify:
+    - restart vault
+
+- name: upstart init script
+  template:
+    src: "{{ vault_upstart_template }}"
+    dest: /etc/init/vault.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: vault_init_method == 'upstart' or (vault_init_method is none and ansible_os_family == 'Debian' and ansible_service_mgr == 'upstart')
+  register: vault_init_upstart
+  notify:
+    - restart vault
+
+- name: systemd init script
+  template:
+    src: "{{ vault_systemd_template }}"
+    dest: /etc/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: 0755
+  when: vault_init_method == 'systemd' or (vault_init_method is none and ansible_service_mgr == 'systemd')
+  register: vault_init_systemd
+  notify:
+    - reload systemd
+    - restart vault
+
+- name: sysv init script
+  template:
+    src: "{{ vault_sysvinit_template }}"
+    dest: /etc/init.d/vault
+    owner: root
+    group: root
+    mode: 0755
+  when: vault_init_method == 'sysvinit' or (vault_init_upstart|skipped and vault_init_systemd|skipped)
+  register: vault_init_sysvinit
+  notify:
+    - restart vault
+
+- name: create log directory
+  file:
+    state: directory
+    path: "{{ vault_log_dir }}"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: 0755
+    recurse: yes
+  when: not vault_init_sysvinit|skipped
+
+- name: give the Vault executable the ability to use the mlock syscall without running the process as root
+  capabilities:
+    path: "{{ vault_bin_dir }}/vault-{{ vault_version }}/vault"
+    capability: cap_ipc_lock=+ep
+    state: present
+
+- name: manage vault service
+  service:
+    name: vault
+    state: "{{ vault_service_enabled | ternary('started', 'stopped') }}"
+    enabled: "{{ vault_service_enabled }}"

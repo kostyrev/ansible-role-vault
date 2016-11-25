@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: Aleksandr Kostyrev
+  description: Ansible role for installing and configuring HashiCorp Vault
+  license: BSD
+  min_ansible_version: 2.1
+  platforms:
+  - name: EL
+    versions:
+    - 6
+  categories:
+  - cloud
+  - clustering
+dependencies: []

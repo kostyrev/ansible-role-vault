@@ -1,0 +1,7 @@
+---
+
+- include: install.yml
+
+- include: configure.yml
+  when: not vault_install_only
+  tags: configure

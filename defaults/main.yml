@@ -1,0 +1,39 @@
+---
+
+vault_version: 0.6.2
+
+vault_checksum_file:     "vault_{{ vault_version }}_SHA256SUMS"
+vault_checksum_file_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_checksum_file }}"
+
+vault_download_dir: /root
+
+vault_zip: vault_{{ vault_version }}_linux_amd64.zip
+vault_zip_url: https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_zip }}
+vault_zip_checksum: "{{ vault_checksums[vault_zip] }}"
+vault_zip_dir: /tmp  # path to download vault zip file before extraction
+vault_install_only: false
+
+vault_bin_dir: /usr/local/bin     # dir to extract vault binary
+vault_conf_dir: /etc/vault        # dir for vault config files
+vault_data_dir: /var/lib/vault    # vault data dir
+vault_log_dir: /var/log/vault     # log dir - only used with sysvinit
+
+# init method; can be upstart, systemd, sysvinit, or null to auto-detect
+vault_init_method: ~
+# if true will create vault user/group
+vault_user_managed: true
+vault_user: vault
+vault_group: vault
+
+# whether service is enabled/started or disabled/stopped
+vault_service_enabled: true
+# whether to restart service on config file or service changes
+vault_service_restart_on_update: true
+
+# config settings passed to vault.json conf file: https://www.vaultproject.io/docs/agent/config.html
+vault_config: {}
+
+# templates used in this role
+vault_upstart_template: vault.conf.j2
+vault_systemd_template: vault.service.j2
+vault_sysvinit_template: vault.sysvinit.j2

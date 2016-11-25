@@ -1,0 +1,9 @@
+---
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: restart vault
+  service:
+    name: vault
+    state: restarted
+  when: vault_service_enabled and vault_service_restart_on_update

@@ -1,0 +1,49 @@
+---
+
+- name: update apt
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+
+- name: install unzip
+  package:
+    name: unzip
+    state: present
+
+- name: Get vault package checksum file
+  get_url:
+    url: "{{ vault_checksum_file_url }}"
+    dest: "{{ vault_download_dir }}"
+
+- name: Get checksum of vault zip
+  shell: "grep {{ vault_zip }} {{ vault_download_dir }}/{{ vault_checksum_file }}"
+  register: chksum
+  changed_when: False
+
+- name: download vault zip
+  get_url:
+    url: "{{ vault_zip_url }}"
+    dest: "{{ vault_download_dir }}/{{ vault_zip }}"
+    checksum: "sha256:{{ chksum.stdout.split(' ')|first }}"
+
+- name: create vault binary directory
+  file:
+    state: directory
+    path: "{{ vault_bin_dir }}/vault-{{ vault_version }}"
+    owner: root
+    group: root
+    recurse: yes
+
+- name: extract vault zip
+  unarchive:
+    src: "{{ vault_download_dir }}/{{ vault_zip }}"
+    dest: "{{ vault_bin_dir }}/vault-{{ vault_version }}"
+    copy: no
+    creates: "{{ vault_bin_dir }}/vault-{{ vault_version }}/vault"
+
+- name: symlink vault binary
+  file:
+    state: link
+    src: "{{ vault_bin_dir }}/vault-{{ vault_version }}/vault"
+    dest: "{{ vault_bin_dir }}/vault"
