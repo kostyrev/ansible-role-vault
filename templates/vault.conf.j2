@@ -7,4 +7,4 @@ respawn
 respawn limit 10 5
 env GOMAXPROCS={{ ansible_processor_vcpus }}
 setuid {{ vault_user }}
-exec {{ vault_bin_dir }}/nomad server -config {{ vault_conf_dir }}
+exec {{ vault_bin_dir }}/vault server -config {{ vault_conf_dir }}

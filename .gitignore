@@ -19,3 +19,6 @@ bin/*
 .kitchen/*
 .kitchen.local.yml
 .kitchen.list.yml
+
+.molecule
+*.retry

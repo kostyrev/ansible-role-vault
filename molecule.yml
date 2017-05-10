@@ -1,0 +1,13 @@
+---
+
+driver:
+  name: docker
+
+docker:
+  containers:
+
+    - name: centos-vault
+      image: centos
+      image_version: 6.8
+      cap_add:
+        - IPC_LOCK

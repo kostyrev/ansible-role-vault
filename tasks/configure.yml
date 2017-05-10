@@ -39,7 +39,7 @@
 
 - name: write config file
   copy:
-    content: "{{ vault_config | to_nice_json }}"
+    content: "{{ vault_config | to_nice_json }}\n"
     dest: "{{ vault_conf_dir }}/vault.json"
     owner: "{{ vault_user }}"
     group: "{{ vault_group }}"

@@ -1,17 +1,20 @@
 ---
 
-vault_version: 0.6.2
+vault_version: 0.7.2
 
 vault_checksum_file:     "vault_{{ vault_version }}_SHA256SUMS"
 vault_checksum_file_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_checksum_file }}"
+vault_signature_file: "{{ vault_checksum_file }}.sig"
+vault_signature_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_signature_file }}"
 
 vault_download_dir: /root
 
 vault_zip: vault_{{ vault_version }}_linux_amd64.zip
 vault_zip_url: https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_zip }}
-vault_zip_checksum: "{{ vault_checksums[vault_zip] }}"
-vault_zip_dir: /tmp  # path to download vault zip file before extraction
 vault_install_only: false
+
+vault_validate_certs: true
+vault_verify_checksum_signature: true
 
 vault_bin_dir: /usr/local/bin     # dir to extract vault binary
 vault_conf_dir: /etc/vault        # dir for vault config files
