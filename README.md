@@ -1,5 +1,7 @@
 # vault
 
+[![Build Status](https://travis-ci.org/kostyrev/ansible-role-vault.svg?branch=master)](https://travis-ci.org/kostyrev/ansible-role-vault)
+
 Install and configure vault
 
 Requirements
@@ -43,4 +45,3 @@ Author Information
 
 Inspired by:
 - Brian Clark's [nomad role](https://github.com/bdclark/ansible-nomad)
-
