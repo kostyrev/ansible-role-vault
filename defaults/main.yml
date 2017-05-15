@@ -31,7 +31,7 @@ vault_group: vault
 # whether service is enabled/started or disabled/stopped
 vault_service_enabled: true
 # whether to restart service on config file or service changes
-vault_service_restart_on_update: true
+vault_service_restart_on_update: "{{ vault_service_enabled }}"
 
 # config settings passed to vault.json conf file: https://www.vaultproject.io/docs/agent/config.html
 vault_config: {}
