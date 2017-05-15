@@ -102,5 +102,5 @@
 - name: manage vault service
   service:
     name: vault
-    state: "{{ vault_service_enabled | ternary('started', 'stopped') }}"
+    state: "{{ (vault_service_enabled|bool) | ternary('started', 'stopped') }}"
     enabled: "{{ vault_service_enabled }}"
