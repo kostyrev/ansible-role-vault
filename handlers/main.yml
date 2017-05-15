@@ -6,4 +6,6 @@
   service:
     name: vault
     state: restarted
-  when: vault_service_enabled and vault_service_restart_on_update
+  when:
+    - vault_service_enabled
+    - vault_service_restart_on_update
