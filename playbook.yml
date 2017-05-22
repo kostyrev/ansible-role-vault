@@ -12,6 +12,9 @@
   any_errors_fatal: true
   vars:
     vault_config:
+      storage:
+        file:
+          path: /tmp/vault-data
       listener:
         tcp:
           address: "{{ '127.0.0.1' if ansible_virtualization_type == 'docker' else ansible_default_ipv4.address }}:8200"

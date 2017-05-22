@@ -76,12 +76,14 @@
     mode: 0755
     recurse: yes
   when: not vault_init_sysvinit|skipped
+  changed_when: no
 
 - name: give the Vault executable the ability to use the mlock syscall without running the process as root
   capabilities:
     path: "{{ vault_bin_dir }}/vault-{{ vault_version }}/vault"
     capability: cap_ipc_lock=+ep
     state: present
+  changed_when: no
 
 - name: manage vault service
   service:
