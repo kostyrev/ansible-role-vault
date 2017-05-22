@@ -4,22 +4,6 @@
   set_fact:
     vault_config: "{{ vault_config }}"
 
-- name: create service group
-  group:
-    name: "{{ vault_group }}"
-    system: yes
-  when: vault_user_managed
-
-- name: create service user
-  user:
-    name: "{{ vault_user }}"
-    group: "{{ vault_group }}"
-    createhome: no
-    system: yes
-    shell: /bin/false
-    comment: "vault service user"
-  when: vault_user_managed
-
 - name: create conf directory
   file:
     state: directory
